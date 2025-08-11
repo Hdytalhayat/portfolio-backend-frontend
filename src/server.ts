@@ -1,11 +1,20 @@
 // src/server.ts
 import app from './app';
+import { testDbConnection } from './config/database'; // Import the test function
 
 // Define the port the server will run on.
-// Use the PORT environment variable if available, otherwise default to 5000.
 const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
-// Start the server and listen for incoming connections.
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Function to start the server
+const startServer = async () => {
+  // First, test the database connection
+  await testDbConnection();
+
+  // If the database connection is successful, start the Express server
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};
+
+// Execute the server start function
+startServer();
