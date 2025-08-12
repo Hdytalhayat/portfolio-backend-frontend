@@ -104,15 +104,15 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
             <div 
               key={project.id} 
               // HAPUS: 'flex-shrink-0' dihapus agar kartu bisa diatur oleh grid
-              className="project-card rounded-xl overflow-hidden" 
+              className="project-card rounded-xl overflow-hidden flex flex-col" 
               style={{backgroundColor: 'var(--card)' /* HAPUS: scrollSnapAlign dihapus */}}
             >
               <div className="h-48 overflow-hidden">
                   <img src={project.image_url} alt={`${project.title} preview`} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
               </div>
               
-              <div className="p-6 flex flex-col justify-between" style={{height: 'calc(420px - 192px)'}}>
-                <div>
+              <div className="p-6 flex flex-col justify-between flex-grow">
+                <div className="flex-grow">
                   <h3 className="text-xl font-bold mb-2">{project.title}</h3>
                   <p className="mb-4 text-sm">{project.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
@@ -121,7 +121,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
                     ))}
                   </div>
                 </div>
-                <div className="flex space-x-3 mt-auto">
+                <div className="flex space-x-3 mt-4">
                     <a href={project.source_code_url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded text-white" style={{backgroundColor: 'var(--primary)'}}>View Repo</a>
                     <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Live Demo</a>
                 </div>
