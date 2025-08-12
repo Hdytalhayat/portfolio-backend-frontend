@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fa';
 import {
   SiUnity, SiGo, SiFlutter, SiLaravel, SiTypescript, SiReact,
-  SiHtml5, SiCss3, SiJavascript, SiGit
+  SiHtml5, SiCss3, SiJavascript, SiGit, SiPhp, SiDart
 } from 'react-icons/si';
 
 // --- About Section Component ---
@@ -41,17 +41,29 @@ const AboutSection: React.FC = () => (
 );
 const TechStackSection: React.FC = () => {
   const techs = [
+    // Platform/Game Engine
     { icon: <SiUnity className="text-5xl" style={{ color: '#222C37' }} />, name: 'Unity3D' },
+
+    // Bahasa Pemrograman
     { icon: <SiGo className="text-5xl" style={{ color: '#00ADD8' }} />, name: 'Golang' },
+    { icon: <SiPhp className="text-5xl" style={{ color: '#777BB4' }} />, name: 'PHP' },
+    { icon: <SiDart className="text-5xl" style={{ color: '#0175C2' }} />, name: 'Dart' },
+    { icon: <SiTypescript className="text-5xl" style={{ color: '#3178C6' }} />, name: 'TypeScript' },
+    { icon: <SiJavascript className="text-5xl" style={{ color: '#F7DF1E' }} />, name: 'JavaScript' },
+
+    // Framework / Library
     { icon: <SiFlutter className="text-5xl" style={{ color: '#02569B' }} />, name: 'Flutter' },
     { icon: <SiLaravel className="text-5xl" style={{ color: '#FF2D20' }} />, name: 'Laravel' },
-    { icon: <SiTypescript className="text-5xl" style={{ color: '#3178C6' }} />, name: 'TypeScript' },
     { icon: <SiReact className="text-5xl" style={{ color: '#61DAFB' }} />, name: 'ReactJS' },
+
+    // Web related (markup & style)
     { icon: <SiHtml5 className="text-5xl" style={{ color: '#E34F26' }} />, name: 'HTML' },
     { icon: <SiCss3 className="text-5xl" style={{ color: '#1572B6' }} />, name: 'CSS' },
-    { icon: <SiJavascript className="text-5xl" style={{ color: '#F7DF1E' }} />, name: 'JavaScript' },
+
+    // Tools / Version Control
     { icon: <SiGit className="text-5xl" style={{ color: '#F05032' }} />, name: 'Git' },
   ];
+  
 
   return (
     <section id="techstack" className="py-20 bg-opacity-50" style={{ backgroundColor: 'var(--card)' }}>
