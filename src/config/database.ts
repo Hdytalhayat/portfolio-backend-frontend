@@ -6,7 +6,7 @@ dotenv.config();
 // The connection pool will read the DATABASE_URL environment variable
 // which we will set in Vercel to our Supabase connection string.
 const pool = new Pool({
-  connectionString: process.env.DB_CONNECTION,
+  connectionString: process.env.DATABASE_URL,
 });
 
 export const testDbConnection = async (): Promise<void> => {
