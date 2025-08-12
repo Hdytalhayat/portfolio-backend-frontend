@@ -11,7 +11,7 @@
 
     "removeComments": true,
     "noEmitOnError": true,
-
+    "isolatedModules" : false,            // Ensure that each file can be safely transpiled independently
     // "noImplicitReturns": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
