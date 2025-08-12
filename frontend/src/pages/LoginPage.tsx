@@ -1,24 +1,18 @@
-// src/pages/LoginPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginAdmin } from '../services/authService';
-import type { LoginCredentials } from '../services/authService';
+import { loginAdmin, LoginCredentials } from '../services/authService';
 
 const LoginPage: React.FC = () => {
-  // Hook for programmatic navigation (e.g., redirecting after login)
   const navigate = useNavigate();
 
-  // State to hold the form data (email and password)
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: '',
   });
   
-  // State for loading and error messages
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handles changes in the input fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCredentials(prevState => ({
@@ -27,18 +21,15 @@ const LoginPage: React.FC = () => {
     }));
   };
 
-  // Handles the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submission (page reload)
+    e.preventDefault();
     setIsLoading(true);
     setError(null);
 
     try {
       await loginAdmin(credentials);
-      // If login is successful, navigate to the dashboard
       navigate('/dashboard');
     } catch (err: any) {
-      // If login fails, set the error message to display to the user
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -46,36 +37,78 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2>Admin Login</h2>
-        {error && <p className="error-message">{error}</p>}
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={credentials.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg)' }}>
+      <div 
+        className="w-full max-w-sm p-8 space-y-6 rounded-xl shadow-lg" 
+        style={{ backgroundColor: 'var(--card)' }}
+      >
+        <h2 className="text-3xl font-bold text-center" style={{ color: 'var(--text)' }}>
+          Admin Portal
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-300">
+              {error}
+            </div>
+          )}
+          
+          <div>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={credentials.email}
+              onChange={handleChange}
+              required
+              className="w-full p-3 text-base rounded-md focus:ring-2 focus:outline-none"
+              style={{ 
+                backgroundColor: 'var(--bg)', 
+                color: 'var(--text)', 
+                borderColor: 'var(--border-color)', 
+                borderWidth: '1px',
+                // @ts-ignore
+                '--tw-ring-color': 'var(--primary)'
+              }}
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="password" className="block mb-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={credentials.password}
+              onChange={handleChange}
+              required
+              className="w-full p-3 text-base rounded-md focus:ring-2 focus:outline-none"
+              style={{ 
+                backgroundColor: 'var(--bg)', 
+                color: 'var(--text)', 
+                borderColor: 'var(--border-color)',
+                borderWidth: '1px',
+                // @ts-ignore
+                '--tw-ring-color': 'var(--primary)'
+              }}
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            disabled={isLoading} 
+            className="w-full px-4 py-3 font-semibold text-white rounded-lg shadow-md transition-opacity duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: 'var(--primary)' }}
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
