@@ -134,7 +134,17 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
                   </div>
                 </div>
                 <div className="flex space-x-3 mt-4">
-                    <a href={project.source_code_url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded text-white" style={{backgroundColor: 'var(--primary)'}}>View Repo</a>
+                    {project.source_code_url && (
+                      <a
+                        href={project.source_code_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 text-sm rounded text-white"
+                        style={{ backgroundColor: 'var(--primary)' }}
+                      >
+                        View Repo
+                      </a>
+                    )}
                     <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Live Demo</a>
                 </div>
               </div>
@@ -142,7 +152,6 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
           ))}
         </div>
         
-        {/* HAPUS: Tombol navigasi panah kiri dan kanan dihapus karena tidak lagi relevan untuk grid */}
         
       </div>
     </section>
