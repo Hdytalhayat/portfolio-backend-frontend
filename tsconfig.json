@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,  // Disallow inconsistently-cased references to the same file
 
     "removeComments": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
     "isolatedModules" : false,            // Ensure that each file can be safely transpiled independently
     // "noImplicitReturns": true,
     // "noUnusedLocals": true,
