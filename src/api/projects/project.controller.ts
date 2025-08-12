@@ -36,3 +36,48 @@ export const trackProjectClick = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error tracking click.' });
   }
 };
+/**
+ * @description Create a new project
+ * @route POST /api/projects
+ * @access Private (Admin only)
+ */
+export const createProject = async (req: Request, res: Response) => {
+  try {
+    // Destructure the required fields from the request body
+    const { title, description, project_url, source_code_url, image_url, tech_stack } = req.body;
+
+    // --- Basic Validation ---
+    if (!title || !description || !project_url || !image_url || !tech_stack) {
+      return res.status(400).json({ message: 'Please provide all required fields.' });
+    }
+
+    // --- Prepare SQL Query ---
+    const query = `
+      INSERT INTO projects 
+      (title, description, project_url, source_code_url, image_url, tech_stack) 
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    const values = [title, description, project_url, source_code_url, image_url, tech_stack];
+
+    // --- Execute Query ---
+    const [result]: any = await pool.query(query, values);
+
+    // --- Send Response ---
+    // Create an object for the newly created project to send back
+    const newProject = {
+      id: result.insertId,
+      title,
+      description,
+      project_url,
+      source_code_url,
+      image_url,
+      tech_stack,
+    };
+
+    res.status(201).json({ message: 'Project created successfully', project: newProject });
+
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(500).json({ message: 'Error creating project in the database.' });
+  }
+};
