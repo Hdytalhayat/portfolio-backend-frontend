@@ -2,20 +2,13 @@
 import { Request, Response } from 'express';
 import pool from '../../config/database';
 
-/**
- * @description Get project click statistics for the dashboard
- * @route GET /api/dashboard/stats
- * @access Private (Admin only)
- */
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
-    // SQL query to count clicks for each project
-    // It joins projects and project_clicks, groups by project, and counts the clicks
     const query = `
       SELECT 
         p.id, 
         p.title, 
-        COUNT(pc.id) AS click_count
+        COUNT(pc.id)::int AS click_count -- Konversi ke integer
       FROM 
         projects p
       LEFT JOIN 
@@ -25,8 +18,10 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       ORDER BY 
         click_count DESC;
     `;
-    const [stats] = await pool.query(query);
-    res.status(200).json(stats);
+    
+    // --- PERBAIKAN ---
+    const { rows } = await pool.query(query);
+    res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
     res.status(500).json({ message: 'Error fetching dashboard statistics.' });

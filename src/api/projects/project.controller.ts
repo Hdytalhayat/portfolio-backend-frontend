@@ -1,6 +1,6 @@
 // src/api/projects/project.controller.ts
 import { Request, Response } from 'express';
-import pool from '../../config/database'; // Import our database connection pool
+import pool from '../../config/database';
 
 /**
  * @description Get all projects from the database
@@ -8,9 +8,10 @@ import pool from '../../config/database'; // Import our database connection pool
  */
 export const getAllProjects = async (req: Request, res: Response) => {
   try {
-    // Execute the query to get all projects, ordered by creation date
-    const [rows] = await pool.query('SELECT * FROM projects ORDER BY created_at DESC');
-    // Send the list of projects as a JSON response
+    // --- PERBAIKAN ---
+    // Ubah dari: const [rows] = await pool.query(...)
+    // Menjadi: const { rows } = await pool.query(...)
+    const { rows } = await pool.query('SELECT * FROM projects ORDER BY created_at DESC');
     res.status(200).json(rows);
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -24,18 +25,17 @@ export const getAllProjects = async (req: Request, res: Response) => {
  */
 export const trackProjectClick = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params; // Get the project ID from the URL parameters
-    // Prepare the SQL query to insert a new click record
-    const query = 'INSERT INTO project_clicks (project_id) VALUES (?)';
-    // Execute the query with the project ID
+    const { id } = req.params;
+    const query = 'INSERT INTO project_clicks (project_id) VALUES ($1)'; // Gunakan $1 untuk PostgreSQL
+    // Query pg tidak mengembalikan hasil yang perlu kita gunakan, jadi ini sudah benar
     await pool.query(query, [id]);
-    // Send a success response
     res.status(200).json({ message: 'Click tracked successfully.' });
   } catch (error) {
     console.error('Error tracking click:', error);
     res.status(500).json({ message: 'Error tracking click.' });
   }
 };
+
 /**
  * @description Create a new project
  * @route POST /api/projects
@@ -43,38 +43,24 @@ export const trackProjectClick = async (req: Request, res: Response) => {
  */
 export const createProject = async (req: Request, res: Response) => {
   try {
-    // Destructure the required fields from the request body
     const { title, description, project_url, source_code_url, image_url, tech_stack } = req.body;
-
-    // --- Basic Validation ---
     if (!title || !description || !project_url || !image_url || !tech_stack) {
       return res.status(400).json({ message: 'Please provide all required fields.' });
     }
 
-    // --- Prepare SQL Query ---
     const query = `
       INSERT INTO projects 
       (title, description, project_url, source_code_url, image_url, tech_stack) 
-      VALUES (?, ?, ?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *; -- Minta PostgreSQL mengembalikan baris yang baru dibuat
     `;
     const values = [title, description, project_url, source_code_url, image_url, tech_stack];
 
-    // --- Execute Query ---
-    const [result]: any = await pool.query(query, values);
+    // --- PERBAIKAN ---
+    // Ambil baris yang baru dibuat dari hasil query
+    const { rows } = await pool.query(query, values);
 
-    // --- Send Response ---
-    // Create an object for the newly created project to send back
-    const newProject = {
-      id: result.insertId,
-      title,
-      description,
-      project_url,
-      source_code_url,
-      image_url,
-      tech_stack,
-    };
-
-    res.status(201).json({ message: 'Project created successfully', project: newProject });
+    res.status(201).json({ message: 'Project created successfully', project: rows[0] });
 
   } catch (error) {
     console.error('Error creating project:', error);
