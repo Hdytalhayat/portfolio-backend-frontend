@@ -145,7 +145,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
                         View Repo
                       </a>
                     )}
-                    <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Live Demo</a>
+                    <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Try it!</a>
                 </div>
               </div>
             </div>
