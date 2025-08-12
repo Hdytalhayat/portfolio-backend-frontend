@@ -73,18 +73,14 @@ const TechStackSection: React.FC = () => {
   );
 };
 // --- Projects Section Component ---
-interface ProjectsSectionProps {
+iinterface ProjectsSectionProps {
   projects: Project[];
   isLoading: boolean;
 }
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }) => {
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  const scrollProjects = (offset: number) => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: offset, behavior: 'smooth' });
-    }
-  };
+  // HAPUS: useRef dan fungsi scrollProjects tidak lagi dibutuhkan untuk layout grid
+  // const carouselRef = useRef<HTMLDivElement>(null);
+  // const scrollProjects = (offset: number) => { ... };
 
   return (
     <section id="projects" className="py-20" style={{backgroundColor: 'var(--bg)'}}>
@@ -93,40 +89,49 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
           <h2 className="text-3xl font-bold mb-4">Featured Projects</h2>
           <p className="max-w-2xl mx-auto">A selection of my recent work and contributions</p>
         </div>
-        <div className="relative">
-          <div ref={carouselRef} className="carousel flex overflow-x-auto pb-10 gap-6" style={{scrollSnapType: 'x mandatory'}}>
-            {isLoading && <p className="w-full text-center">Loading projects...</p>}
-            {!isLoading && projects.map(project => (
-              <div key={project.id} className="project-card flex-shrink-0 rounded-xl overflow-hidden" style={{backgroundColor: 'var(--card)', scrollSnapAlign: 'start'}}>
-                <div className="h-48 overflow-hidden">
-                    <img src={project.image_url} alt={`${project.title} preview`} className="w-full h-full object-cover" />
+        
+        {/*
+          PERUBAHAN UTAMA DI SINI:
+          - Mengganti 'flex overflow-x-auto' dengan 'grid'.
+          - Menambahkan 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' untuk layout responsif.
+          - Menghapus atribut 'ref' dan inline style 'scrollSnapType'.
+        */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          
+          {isLoading && <p className="w-full text-center col-span-full">Loading projects...</p>}
+          
+          {!isLoading && projects.map(project => (
+            <div 
+              key={project.id} 
+              // HAPUS: 'flex-shrink-0' dihapus agar kartu bisa diatur oleh grid
+              className="project-card rounded-xl overflow-hidden" 
+              style={{backgroundColor: 'var(--card)' /* HAPUS: scrollSnapAlign dihapus */}}
+            >
+              <div className="h-48 overflow-hidden">
+                  <img src={project.image_url} alt={`${project.title} preview`} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+              </div>
+              
+              <div className="p-6 flex flex-col justify-between" style={{height: 'calc(420px - 192px)'}}>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+                  <p className="mb-4 text-sm">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {project.tech_stack.split(',').map(tech => (
+                      <span key={tech} className="px-2 py-1 text-xs rounded-full text-white" style={{backgroundColor: 'var(--primary)', opacity: 0.8}}>{tech.trim()}</span>
+                    ))}
+                  </div>
                 </div>
-                {/* We use a flex container to push the buttons to the bottom */}
-                <div className="p-6 flex flex-col justify-between" style={{height: 'calc(420px - 192px)'}}>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="mb-4 text-sm">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tech_stack.split(',').map(tech => (
-                        <span key={tech} className="px-2 py-1 text-xs rounded-full text-white" style={{backgroundColor: 'var(--primary)', opacity: 0.8}}>{tech.trim()}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex space-x-3 mt-auto">
-                      <a href={project.source_code_url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded text-white" style={{backgroundColor: 'var(--primary)'}}>View Repo</a>
-                      <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Live Demo</a>
-                  </div>
+                <div className="flex space-x-3 mt-auto">
+                    <a href={project.source_code_url} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded text-white" style={{backgroundColor: 'var(--primary)'}}>View Repo</a>
+                    <a href={project.project_url} onClick={() => trackClick(project.id)} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm rounded border" style={{borderColor: 'var(--primary)', color: 'var(--primary)'}}>Live Demo</a>
                 </div>
               </div>
-            ))}
-          </div>
-          <button className="carousel-nav absolute top-1/2 left-0 md:left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full focus:outline-none" onClick={() => scrollProjects(-324)}>
-            <i className="fas fa-chevron-left"></i>
-          </button>
-          <button className="carousel-nav absolute top-1/2 right-0 md:right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full focus:outline-none" onClick={() => scrollProjects(324)}>
-            <i className="fas fa-chevron-right"></i>
-          </button>
+            </div>
+          ))}
         </div>
+        
+        {/* HAPUS: Tombol navigasi panah kiri dan kanan dihapus karena tidak lagi relevan untuk grid */}
+        
       </div>
     </section>
   );
