@@ -134,11 +134,6 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ projects, isLoading }
 
 // --- Contact Section Component ---
 const ContactSection: React.FC = () => {
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        alert('Message sent! I\'ll get back to you soon.');
-        (e.target as HTMLFormElement).reset();
-    };
     return (
         <section id="contact" className="py-20" style={{ backgroundColor: 'var(--card)' }}>
             <div className="container mx-auto px-6">
