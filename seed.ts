@@ -1,41 +1,47 @@
 // seed.ts
 import bcrypt from 'bcryptjs';
-import mysql from 'mysql2/promise';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
+const isProduction = process.env.NODE_ENV === 'production';
+// The connection pool will read the DATABASE_URL environment variable
+// which we will set in Vercel to our Supabase connection string.
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Hanya aktifkan SSL di lingkungan produksi.
+  // Di lokal (localhost), Anda mungkin tidak memerlukan SSL.
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
+
 
 const createAdmin = async () => {
-  let connection;
-  try {
-    // Establish connection to the database
-    connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
+  const client = await pool.connect();
 
+  try {
     console.log('Database connection successful.');
 
     // --- Admin Details ---
     const adminEmail = 'admin@example.com';
-    const adminPassword = 'password123'; // Use a strong password in a real project!
+    const adminPassword = 'password123'; // Gunakan password kuat di real project
 
-    // Check if the admin already exists
-    const [rows]: any = await connection.execute('SELECT * FROM admins WHERE email = ?', [adminEmail]);
-    if (rows.length > 0) {
+    // Cek apakah admin sudah ada
+    const result = await client.query(
+      'SELECT * FROM admins WHERE email = $1',
+      [adminEmail]
+    );
+
+    if (result.rows.length > 0) {
       console.log(`Admin with email ${adminEmail} already exists.`);
       return;
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(adminPassword, 10); // 10 is the salt rounds
+    // Hash password
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-    // Insert the new admin into the database
-    await connection.execute(
-      'INSERT INTO admins (email, password) VALUES (?, ?)',
+    // Insert admin baru
+    await client.query(
+      'INSERT INTO admins (email, password) VALUES ($1, $2)',
       [adminEmail, hashedPassword]
     );
 
@@ -46,13 +52,11 @@ const createAdmin = async () => {
   } catch (error) {
     console.error('Failed to seed admin user:', error);
   } finally {
-    // Always close the connection
-    if (connection) {
-      await connection.end();
-      console.log('Database connection closed.');
-    }
+    client.release();
+    await pool.end();
+    console.log('Database connection closed.');
   }
 };
 
-// Run the seeder function
+// Jalankan seeder
 createAdmin();
