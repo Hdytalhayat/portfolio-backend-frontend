@@ -1,5 +1,5 @@
 // src/pages/HomePage.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Project } from '../types';
 import { getAllProjects, trackClick } from '../services/projectService';
 import {
@@ -73,7 +73,7 @@ const TechStackSection: React.FC = () => {
   );
 };
 // --- Projects Section Component ---
-iinterface ProjectsSectionProps {
+interface ProjectsSectionProps {
   projects: Project[];
   isLoading: boolean;
 }
