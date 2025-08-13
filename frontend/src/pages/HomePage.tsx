@@ -26,9 +26,7 @@ const AboutSection: React.FC = () => (
                 <h1 className="text-4xl md:text-6xl font-bold">Hidayatul Hayat</h1>
                 <h2 className="text-2xl md:text-3xl" style={{ color: 'var(--primary)' }}>Full-Stack Developer</h2>
                 <p className="text-lg leading-relaxed">
-                    Experienced software engineer with a passion for building efficient backend systems,
-          scalable fullstack applications, and immersive game experiences. Skilled in Golang, Laravel,
-          Flutter, Unity, and TypeScript with a focus on clean architecture and high-performance solutions.
+                    Fresh graduate in Computer Science with a strong interest in backend systems, fullstack applications, and game development. Experienced in academic and personal projects using Golang, Laravel, Flutter, Unity, and TypeScript. Passionate about clean architecture, problem-solving, and building efficient, scalable solutions. Eager to learn, adapt, and contribute to real-world software development projects.
 
                 </p>
                 <div className="flex space-x-4 pt-4">
