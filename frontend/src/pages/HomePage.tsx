@@ -16,7 +16,7 @@ const AboutSection: React.FC = () => (
         <div className="flex flex-col md:flex-row items-center justify-between w-full gap-12">
             <div className="w-full md:w-1/2 flex justify-center">
                 <img 
-                    src="https://media.licdn.com/dms/image/v2/D5603AQFsBMD2ZqKX0g/profile-displayphoto-shrink_800_800/B56ZhdgwY5HUAc-/0/1753915525537?e=1758153600&v=beta&t=MGe6-oZkulq9n5xQI1nlkhGTEj9FH78hOTJ_2C1s5m4" 
+                    src="https://media.licdn.com/dms/image/v2/D5603AQFsBMD2ZqKX0g/profile-displayphoto-shrink_800_800/B56ZhdgwY5HUAc-/0/1753915525537?e=1762387200&v=beta&t=9b3d835UqxOk6cr6CAwYjNwZnyTn9Zh7PrS0Iw5qwTs" 
                     alt="Portrait of a professional software developer with a modern background" 
                     className="profile-pic w-full max-w-md"
                 />
