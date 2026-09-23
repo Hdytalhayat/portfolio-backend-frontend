@@ -16,7 +16,7 @@ const AboutSection: React.FC = () => (
         <div className="flex flex-col md:flex-row items-center justify-between w-full gap-12">
             <div className="w-full md:w-1/2 flex justify-center">
                 <img 
-                    src="https://s6.imgcdn.dev/YWUETS.jpg" 
+                    src="https://res.cloudinary.com/t974i8nd/image/upload/f_auto,q_auto/DSC_1289"
                     className="profile-pic w-full max-w-md"
                 />
             </div>
