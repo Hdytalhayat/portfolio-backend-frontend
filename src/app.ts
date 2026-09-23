@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import projectRoutes from './api/projects/project.routes';
 import authRoutes from './api/auth/auth.routes';
 import dashboardRoutes from './api/dashboard/dashboard.routes';
+import healthRoutes from './api/health/health.routes';
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/health', healthRoutes);
 
 
 export default app;
