@@ -8,29 +8,31 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const protect = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  let token;
   // Check if the token is sent in the headers and starts with 'Bearer'
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       // Get token from header (e.g., "Bearer <token>")
-      token = req.headers.authorization.split(' ')[1];
+      const token = req.headers.authorization.split(' ')[1];
+
+      const secret = process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'your-default-secret-key' : undefined);
+      if (!secret) {
+        console.error('JWT_SECRET is not configured.');
+        return res.status(500).json({ message: 'Server misconfiguration.' });
+      }
 
       // Verify the token
-      const secret = process.env.JWT_SECRET || 'your-default-secret-key';
       const decoded = jwt.verify(token, secret);
 
       // Attach the decoded payload (user info) to the request object
       req.admin = decoded;
-      
+
       // Proceed to the next middleware or route handler
-      next();
+      return next();
     } catch (error) {
       console.error('Token verification failed:', error);
-      res.status(401).json({ message: 'Not authorized, token failed.' });
+      return res.status(401).json({ message: 'Not authorized, token failed.' });
     }
   }
 
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token.' });
-  }
+  return res.status(401).json({ message: 'Not authorized, no token.' });
 };

@@ -16,7 +16,8 @@ dotenv.config();
 const app: Application = express();
 
 // Middlewares
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+const corsOrigin = process.env.CORS_ORIGIN;
+app.use(cors(corsOrigin ? { origin: corsOrigin.split(',').map((o) => o.trim()) } : undefined)); // Enable Cross-Origin Resource Sharing
 app.use(express.json()); // Parse incoming requests with JSON payloads
 
 // A simple route for testing

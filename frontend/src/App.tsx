@@ -19,7 +19,6 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
         </Route>
         {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
 
         {/* Protected Routes */}
