@@ -1,0 +1,17 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Runs every 5 days at 00:00 UTC
+    - cron: '0 0 */5 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping database keepalive endpoint
+        run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            https://portfolio-backend-mu-one.vercel.app/api/ping || \
+          curl -fsS https://YOUR-VERCEL-APP.vercel.app/api/ping
