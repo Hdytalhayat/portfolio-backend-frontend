@@ -6,6 +6,24 @@ import pool from '../../config/database';
  * @description Get all projects from the database
  * @route GET /api/projects
  */
+/**
+ * @description Get a single project by id
+ * @route GET /api/projects/:id
+ */
+export const getProjectById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { rows } = await pool.query('SELECT * FROM projects WHERE id = $1', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Project not found.' });
+    }
+    res.status(200).json(rows[0]);
+  } catch (error) {
+    console.error('Error fetching project:', error);
+    res.status(500).json({ message: 'Error fetching project from the database.' });
+  }
+};
+
 export const getAllProjects = async (req: Request, res: Response) => {
   try {
     // --- PERBAIKAN ---
@@ -41,6 +59,64 @@ export const trackProjectClick = async (req: Request, res: Response) => {
  * @route POST /api/projects
  * @access Private (Admin only)
  */
+/**
+ * @description Update an existing project
+ * @route PUT /api/projects/:id
+ * @access Private (Admin only)
+ */
+export const updateProject = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, description, project_url, source_code_url, image_url, tech_stack } = req.body;
+
+    if (!title || !description || !project_url || !image_url || !tech_stack) {
+      return res.status(400).json({ message: 'Please provide all required fields.' });
+    }
+
+    const query = `
+      UPDATE projects
+      SET title = $1, description = $2, project_url = $3, source_code_url = $4, image_url = $5, tech_stack = $6
+      WHERE id = $7
+      RETURNING *;
+    `;
+    const values = [title, description, project_url, source_code_url || null, image_url, tech_stack, id];
+
+    const { rows } = await pool.query(query, values);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Project not found.' });
+    }
+
+    res.status(200).json({ message: 'Project updated successfully', project: rows[0] });
+  } catch (error) {
+    console.error('Error updating project:', error);
+    res.status(500).json({ message: 'Error updating project in the database.' });
+  }
+};
+
+/**
+ * @description Delete a project
+ * @route DELETE /api/projects/:id
+ * @access Private (Admin only)
+ */
+export const deleteProject = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Remove related clicks first to avoid FK constraint issues
+    await pool.query('DELETE FROM project_clicks WHERE project_id = $1', [id]);
+
+    const result = await pool.query('DELETE FROM projects WHERE id = $1', [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Project not found.' });
+    }
+
+    res.status(200).json({ message: 'Project deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ message: 'Error deleting project from the database.' });
+  }
+};
+
 export const createProject = async (req: Request, res: Response) => {
   try {
     const { title, description, project_url, source_code_url, image_url, tech_stack } = req.body;

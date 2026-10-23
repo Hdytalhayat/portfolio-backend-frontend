@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { ProjectStat } from '../types';
+import type { Project, ProjectStat } from '../types';
 import { getStats } from '../services/dashboardService';
 import { logoutAdmin } from '../services/authService';
-import AddProjectModal from '../components/AddProjectModal'; // Pastikan modal ini juga sudah diupdate gayanya jika perlu
+import { deleteProject, getProjectById } from '../services/projectService';
+import AddProjectModal from '../components/AddProjectModal';
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState<ProjectStat[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -33,9 +36,42 @@ const DashboardPage: React.FC = () => {
     logoutAdmin();
     navigate('/login');
   };
-  
-  const handleProjectAdded = (newStat: ProjectStat) => {
-    setStats(prevStats => [newStat, ...prevStats]);
+
+  const handleAddClick = () => {
+    setEditingProject(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditClick = async (id: number) => {
+    try {
+      setError(null);
+      const project = await getProjectById(id);
+      setEditingProject(project);
+      setIsModalOpen(true);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const handleDeleteClick = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this project?')) return;
+    setDeletingId(id);
+    try {
+      await deleteProject(id);
+      setStats(prev => prev.filter(s => s.id !== id));
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleSuccess = (saved: Project, isEdit: boolean) => {
+    if (isEdit) {
+      setStats(prev => prev.map(s => (s.id === saved.id ? { ...s, title: saved.title } : s)));
+    } else {
+      setStats(prev => [{ id: saved.id, title: saved.title, click_count: 0 }, ...prev]);
+    }
   };
 
   const totalClicks = stats.reduce((sum, current) => sum + Number(current.click_count), 0);
@@ -45,12 +81,13 @@ const DashboardPage: React.FC = () => {
     <>
       <AddProjectModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onProjectAdded={handleProjectAdded}
+        onClose={() => { setIsModalOpen(false); setEditingProject(null); }}
+        project={editingProject}
+        onSuccess={handleSuccess}
       />
       <div className="min-h-screen p-4 sm:p-6 md:p-8" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>
         <div className="max-w-7xl mx-auto">
-          
+
           {/* Header */}
           <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
             <div>
@@ -59,15 +96,15 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4 mt-4 sm:mt-0">
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleAddClick}
                 className="px-4 py-2 text-sm font-semibold text-white rounded-lg shadow-md flex items-center gap-2"
                 style={{ backgroundColor: 'var(--primary)' }}
               >
                 <i className="fas fa-plus-circle"></i>
                 Add Project
               </button>
-              <button 
-                onClick={handleLogout} 
+              <button
+                onClick={handleLogout}
                 className="px-4 py-2 text-sm font-semibold rounded-lg shadow-md"
                 style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border-color)' }}
               >
@@ -96,7 +133,6 @@ const DashboardPage: React.FC = () => {
                 <i className="fas fa-mouse-pointer"></i>
               </div>
             </div>
-            {/* Tambahkan kartu statistik lain di sini jika perlu */}
           </div>
 
           {/* Projects Table */}
@@ -127,8 +163,20 @@ const DashboardPage: React.FC = () => {
                       <td className="px-6 py-4 font-bold text-center">{stat.click_count}</td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end space-x-4">
-                          <button className="text-sm font-medium hover:underline" style={{ color: 'var(--primary)' }}>Edit</button>
-                          <button className="text-sm font-medium text-red-500 hover:underline">Delete</button>
+                          <button
+                            onClick={() => handleEditClick(stat.id)}
+                            className="text-sm font-medium hover:underline"
+                            style={{ color: 'var(--primary)' }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(stat.id)}
+                            disabled={deletingId === stat.id}
+                            className="text-sm font-medium text-red-500 hover:underline disabled:opacity-50"
+                          >
+                            {deletingId === stat.id ? 'Deleting...' : 'Delete'}
+                          </button>
                         </div>
                       </td>
                     </tr>

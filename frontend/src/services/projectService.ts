@@ -6,6 +6,16 @@ import type { Project } from "../types"; // Import the Project interface
  * @description Fetches all projects from the backend API.
  * @returns A promise that resolves to an array of Project objects.
  */
+export const getProjectById = async (id: number): Promise<Project> => {
+  try {
+    const response = await apiClient.get<Project>(`/projects/${id}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to fetch project:', error);
+    throw new Error(error.response?.data?.message || 'Could not load project.');
+  }
+};
+
 export const getAllProjects = async (): Promise<Project[]> => {
   try {
     // Make a GET request to the '/projects' endpoint.
@@ -60,5 +70,30 @@ export const addProject = async (projectData: NewProjectData): Promise<Project> 
   } catch (error: any) {
     console.error('Failed to add project:', error);
     throw new Error(error.response?.data?.message || 'Could not add the project.');
+  }
+};
+
+/**
+ * @description Updates an existing project.
+ */
+export const updateProject = async (id: number, projectData: NewProjectData): Promise<Project> => {
+  try {
+    const response = await apiClient.put<{ message: string; project: Project }>(`/projects/${id}`, projectData);
+    return response.data.project;
+  } catch (error: any) {
+    console.error('Failed to update project:', error);
+    throw new Error(error.response?.data?.message || 'Could not update the project.');
+  }
+};
+
+/**
+ * @description Deletes a project.
+ */
+export const deleteProject = async (id: number): Promise<void> => {
+  try {
+    await apiClient.delete(`/projects/${id}`);
+  } catch (error: any) {
+    console.error('Failed to delete project:', error);
+    throw new Error(error.response?.data?.message || 'Could not delete the project.');
   }
 };
