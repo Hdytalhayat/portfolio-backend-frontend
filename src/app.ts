@@ -29,6 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', healthRoutes);
 app.use('/api/health', healthRoutes);
 
 
