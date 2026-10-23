@@ -20,11 +20,14 @@ const initialState: NewProjectData = {
   tech_stack: '',
 };
 
+const clean = (value: string | undefined) => (value || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+
 const isValidUrl = (value: string) => {
-  if (!value) return true; // optional fields
+  const v = clean(value);
+  if (!v) return true; // optional fields
   try {
     // eslint-disable-next-line no-new
-    new URL(value);
+    new URL(v);
     return true;
   } catch {
     return false;
@@ -63,11 +66,11 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, proj
   };
 
   const validate = (): string | null => {
-    if (!projectData.title.trim()) return 'Title is required.';
-    if (!projectData.description.trim()) return 'Description is required.';
-    if (!projectData.project_url.trim()) return 'Project URL is required.';
-    if (!projectData.image_url.trim()) return 'Image URL is required.';
-    if (!projectData.tech_stack.trim()) return 'Tech stack is required.';
+    if (!clean(projectData.title)) return 'Title is required.';
+    if (!clean(projectData.description)) return 'Description is required.';
+    if (!clean(projectData.project_url)) return 'Project URL is required.';
+    if (!clean(projectData.image_url)) return 'Image URL is required.';
+    if (!clean(projectData.tech_stack)) return 'Tech stack is required.';
     if (!isValidUrl(projectData.project_url)) return 'Project URL is not valid.';
     if (projectData.source_code_url && !isValidUrl(projectData.source_code_url)) return 'Source code URL is not valid.';
     if (!isValidUrl(projectData.image_url)) return 'Image URL is not valid.';
@@ -85,11 +88,19 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, proj
     setIsLoading(true);
     setError(null);
     try {
+      const payload: NewProjectData = {
+        title: clean(projectData.title),
+        description: clean(projectData.description),
+        project_url: clean(projectData.project_url),
+        source_code_url: clean(projectData.source_code_url),
+        image_url: clean(projectData.image_url),
+        tech_stack: clean(projectData.tech_stack),
+      };
       let saved: Project;
       if (isEdit && project) {
-        saved = await updateProject(project.id, projectData);
+        saved = await updateProject(project.id, payload);
       } else {
-        saved = await addProject(projectData);
+        saved = await addProject(payload);
       }
       onSuccess(saved, isEdit);
       setProjectData(initialState);
