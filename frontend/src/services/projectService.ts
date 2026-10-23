@@ -11,8 +11,9 @@ export const getProjectById = async (id: number): Promise<Project> => {
     const response = await apiClient.get<Project>(`/projects/${id}`);
     return response.data;
   } catch (error: any) {
-    console.error('Failed to fetch project:', error);
-    throw new Error(error.response?.data?.message || 'Could not load project.');
+    console.error('Failed to fetch project:', error?.response?.status, error?.response?.data || error?.message);
+    const backendMsg = typeof error?.response?.data === 'object' ? error.response.data?.message : error?.response?.data;
+    throw new Error(backendMsg || `Could not load project (status ${error?.response?.status ?? 'network'}).`);
   }
 };
 

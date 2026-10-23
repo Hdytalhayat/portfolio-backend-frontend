@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Project, ProjectStat } from '../types';
 import { getStats } from '../services/dashboardService';
 import { logoutAdmin } from '../services/authService';
-import { deleteProject, getProjectById } from '../services/projectService';
+import { deleteProject, getProjectById, getAllProjects } from '../services/projectService';
 import AddProjectModal from '../components/AddProjectModal';
 
 const DashboardPage: React.FC = () => {
@@ -45,7 +45,15 @@ const DashboardPage: React.FC = () => {
   const handleEditClick = async (id: number) => {
     try {
       setError(null);
-      const project = await getProjectById(id);
+      let project: Project | undefined;
+      try {
+        project = await getProjectById(id);
+      } catch {
+        // Fallback for older backends that don't expose GET /:id
+        const all = await getAllProjects();
+        project = all.find(p => p.id === id);
+      }
+      if (!project) throw new Error('Project not found.');
       setEditingProject(project);
       setIsModalOpen(true);
     } catch (err: any) {
