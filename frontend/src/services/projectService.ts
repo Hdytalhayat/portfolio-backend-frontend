@@ -82,8 +82,9 @@ export const updateProject = async (id: number, projectData: NewProjectData): Pr
     const response = await apiClient.put<{ message: string; project: Project }>(`/projects/${id}`, projectData);
     return response.data.project;
   } catch (error: any) {
-    console.error('Failed to update project:', error);
-    throw new Error(error.response?.data?.message || 'Could not update the project.');
+    console.error('Failed to update project:', error?.response?.status, error?.response?.data || error?.message);
+    const backendMsg = typeof error?.response?.data === 'object' ? error.response.data?.message : error?.response?.data;
+    throw new Error(backendMsg || `Could not update the project (status ${error?.response?.status ?? 'network'}).`);
   }
 };
 
@@ -94,7 +95,8 @@ export const deleteProject = async (id: number): Promise<void> => {
   try {
     await apiClient.delete(`/projects/${id}`);
   } catch (error: any) {
-    console.error('Failed to delete project:', error);
-    throw new Error(error.response?.data?.message || 'Could not delete the project.');
+    console.error('Failed to delete project:', error?.response?.status, error?.response?.data || error?.message);
+    const backendMsg = typeof error?.response?.data === 'object' ? error.response.data?.message : error?.response?.data;
+    throw new Error(backendMsg || `Could not delete the project (status ${error?.response?.status ?? 'network'}).`);
   }
 };
