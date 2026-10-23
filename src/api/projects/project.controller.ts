@@ -12,7 +12,10 @@ import pool from '../../config/database';
  */
 export const getProjectById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ message: 'Invalid project id.' });
+    }
     const { rows } = await pool.query('SELECT * FROM projects WHERE id = $1', [id]);
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Project not found.' });
@@ -43,7 +46,10 @@ export const getAllProjects = async (req: Request, res: Response) => {
  */
 export const trackProjectClick = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ message: 'Invalid project id.' });
+    }
     const query = 'INSERT INTO project_clicks (project_id) VALUES ($1)'; // Gunakan $1 untuk PostgreSQL
     // Query pg tidak mengembalikan hasil yang perlu kita gunakan, jadi ini sudah benar
     await pool.query(query, [id]);
@@ -66,7 +72,10 @@ export const trackProjectClick = async (req: Request, res: Response) => {
  */
 export const updateProject = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ message: 'Invalid project id.' });
+    }
     const { title, description, project_url, source_code_url, image_url, tech_stack } = req.body;
 
     if (!title || !description || !project_url || !image_url || !tech_stack) {
@@ -100,7 +109,10 @@ export const updateProject = async (req: Request, res: Response) => {
  */
 export const deleteProject = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ message: 'Invalid project id.' });
+    }
 
     // Remove related clicks first to avoid FK constraint issues
     await pool.query('DELETE FROM project_clicks WHERE project_id = $1', [id]);
