@@ -23,8 +23,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
 
+    const secret = process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'your-default-secret-key' : undefined);
+    if (!secret) {
+      console.error('JWT_SECRET is not configured.');
+      return res.status(500).json({ message: 'Server misconfiguration.' });
+    }
+
     const payload = { id: admin.id, email: admin.email };
-    const secret = process.env.JWT_SECRET || 'your-default-secret-key';
     const token = jwt.sign(payload, secret, { expiresIn: '1d' });
 
     res.status(200).json({ message: 'Login successful', token });
