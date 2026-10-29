@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fa';
 import {
   SiUnity, SiGo, SiFlutter, SiLaravel, SiTypescript, SiReact,
-  SiHtml5, SiCss3, SiJavascript, SiGit, SiPhp, SiDart, SiN8N, SiDocker, SiDocker 
+  SiHtml5, SiCss3, SiJavascript, SiGit, SiPhp, SiDart, SiN8N, SiDocker 
 } from 'react-icons/si';
 
 // --- About Section Component ---
