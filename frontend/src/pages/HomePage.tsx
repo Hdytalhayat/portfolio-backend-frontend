@@ -7,7 +7,7 @@ import {
 } from 'react-icons/fa';
 import {
   SiUnity, SiGo, SiFlutter, SiLaravel, SiTypescript, SiReact,
-  SiHtml5, SiCss3, SiJavascript, SiGit, SiPhp, SiDart
+  SiHtml5, SiCss3, SiJavascript, SiGit, SiPhp, SiDart, SiN8N, SiDocker, SiDocker 
 } from 'react-icons/si';
 
 // --- About Section Component ---
@@ -25,7 +25,7 @@ const AboutSection: React.FC = () => (
                 <h1 className="text-4xl md:text-6xl font-bold">Hidayatul Hayat</h1>
                 <h2 className="text-2xl md:text-3xl" style={{ color: 'var(--primary)' }}>Full-Stack Developer</h2>
                 <p className="text-lg leading-relaxed">
-                    Informatics Engineering graduate with hands-on experience in backend, game, and full-stack development. Familiar with Golang, Flutter, Unity, and real-time systems development through academic and internship projects. Enjoy building scalable applications, solving technical problems, and working collaboratively in teams. Interested in software engineering roles focused on backend systems and application development.
+                    Informatics Engineering graduate with hands-on experience in backend, game, and full-stack development. Familiar with Laravel, CodeIgniter, Unity, and real-time systems development through academic and internship projects. Enjoy building scalable applications, solving technical problems, and working collaboratively in teams. Interested in software engineering roles focused on backend systems and application development.
                 </p>
                 <div className="flex space-x-4 pt-4">
                     <a href="#contact" className="px-6 py-3 rounded-lg font-medium text-white" style={{ backgroundColor: 'var(--primary)' }}>Contact Me</a>
@@ -41,16 +41,18 @@ const TechStackSection: React.FC = () => {
     { icon: <SiUnity className="text-5xl" style={{ color: '#222C37' }} />, name: 'Unity3D' },
 
     // Bahasa Pemrograman
-    { icon: <SiGo className="text-5xl" style={{ color: '#00ADD8' }} />, name: 'Golang' },
     { icon: <SiPhp className="text-5xl" style={{ color: '#777BB4' }} />, name: 'PHP' },
-    { icon: <SiDart className="text-5xl" style={{ color: '#0175C2' }} />, name: 'Dart' },
     { icon: <SiTypescript className="text-5xl" style={{ color: '#3178C6' }} />, name: 'TypeScript' },
     { icon: <SiJavascript className="text-5xl" style={{ color: '#F7DF1E' }} />, name: 'JavaScript' },
+    { icon: <SiGo className="text-5xl" style={{ color: '#00ADD8' }} />, name: 'Golang' },
+    { icon: <SiDart className="text-5xl" style={{ color: '#0175C2' }} />, name: 'Dart' },
 
     // Framework / Library
     { icon: <SiFlutter className="text-5xl" style={{ color: '#02569B' }} />, name: 'Flutter' },
     { icon: <SiLaravel className="text-5xl" style={{ color: '#FF2D20' }} />, name: 'Laravel' },
     { icon: <SiReact className="text-5xl" style={{ color: '#61DAFB' }} />, name: 'ReactJS' },
+    { icon: <SiN8N className="text-5xl" style={{ color: '#FF6C37' }} />, name: 'n8n' },
+    { icon: <SiDocker className="text-5xl" style={{ color: '#2496ED' }} />, name: 'Docker' },
 
     // Web related (markup & style)
     { icon: <SiHtml5 className="text-5xl" style={{ color: '#E34F26' }} />, name: 'HTML' },
