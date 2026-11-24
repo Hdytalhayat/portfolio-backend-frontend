@@ -46,6 +46,7 @@ const TechStackSection: React.FC = () => {
     { icon: <SiJavascript className="text-5xl" style={{ color: '#F7DF1E' }} />, name: 'JavaScript' },
     { icon: <SiGo className="text-5xl" style={{ color: '#00ADD8' }} />, name: 'Golang' },
     { icon: <SiDart className="text-5xl" style={{ color: '#0175C2' }} />, name: 'Dart' },
+    { icon: <SiRust className="text-5xl" style={{ color: '#FF2D20' }} />, name: 'Rust' },
 
     // Framework / Library
     { icon: <SiFlutter className="text-5xl" style={{ color: '#02569B' }} />, name: 'Flutter' },
